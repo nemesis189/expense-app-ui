@@ -102,7 +102,7 @@ export const SubmitButton = styled.button`
 	color: rgb(241, 196, 15);
 	margin: 2rem 1em;
 	padding: 0.25em 1em;
-	font-size: 20px;
+	font-size: 22px;
 	font-weight: 800;
 
 	transition: all .3s ease-out;

@@ -94,7 +94,7 @@ export const HeaderText = styled.h2`
 
 export const SubmitButton = styled.button`
 	width: 50%;
-	max-height: 100px;
+	height: 50px;
 	background: linear-gradient(to right, rgb(241, 196, 15) 50%, transparent 50%);
 	background-size: 200%;
 	background-position: right;
@@ -104,8 +104,8 @@ export const SubmitButton = styled.button`
 	margin: 2rem 1em;
 	padding: 3px;
 	font-size: 22px;
-	font-weight: 500;
-	font-family: 'Pacifico';
+	font-weight: 800;
+	/* font-family: 'Rubik'; */
 	
 	transition: all .3s ease-out;
 

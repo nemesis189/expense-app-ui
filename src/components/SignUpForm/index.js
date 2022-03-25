@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link as RouterLink} from 'react-router-dom';
 import { AccountContext } from '../context/accountContext';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -148,9 +149,11 @@ export default function SignUp() {
 						</SubmitButton>
 						<Grid container justifyContent="center">
 							<Grid item sx={{mt:1, mb:2}}>
-								<LoginLink href="#" variant="body2" >
-									Already have an account? Sign in
-								</LoginLink>
+								<Link component={RouterLink} to='/'>
+									<LoginLink href="#" variant="body2" >
+										Already have an account? Sign in
+									</LoginLink>
+								</Link>
 							</Grid>
 						</Grid>
 					</Box>

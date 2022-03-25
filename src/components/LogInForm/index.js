@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import {Link as RouterLink} from 'react-router-dom';
 import { AccountContext } from "../context/accountContext"; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -75,6 +76,7 @@ export default function LogIn() {
 						<Grid container spacing={5}>
 							<Grid item xs={12}>
 								<CssTextField
+									autoFocus
 									required
 									fullWidth
 									id="email"
@@ -98,13 +100,15 @@ export default function LogIn() {
 							</Grid>
 						</Grid>
 						<SubmitButton>
-							Sign Up
+							Log In
 						</SubmitButton>
 						<Grid container justifyContent="center">
 							<Grid item sx={{mt:1, mb:2}}>
-								<LoginLink href="#" variant="body2">
-									Don't have an account? Sign Up
-								</LoginLink>
+									<Link component={RouterLink} to='/signup'>
+										<LoginLink href="#" variant="body2">
+											Don't have an account? Sign Up
+										</LoginLink>
+									</Link>
 							</Grid>
 						</Grid>
 					</Box>
