@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { AccountContext } from '../context/accountContext';
+import React, { useContext, useState } from "react";
+import { AccountContext } from "../context/accountContext"; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BoxContainer, TopContainer, BackDrop, HeaderContainer, HeaderText, SubmitButton, LoginLink, BlobContainer } from './SignUpForm.styles';
+import { BoxContainer, TopContainer, BackDrop, HeaderContainer, HeaderText, SubmitButton, LoginLink, BlobContainer } from './LogInForm.styles';
 import { withStyles } from '@mui/styles';
 
 const theme = createTheme({
@@ -21,7 +21,7 @@ const theme = createTheme({
         fontFamily: "Rubik",
         color: '#fff',
     },
-})
+});
 
 const CssTextField = withStyles({
 	root : {
@@ -39,12 +39,8 @@ const CssTextField = withStyles({
 	}
 })(TextField);
 
-
-
-// const contextValue = { switchToSignup, switchToSignin };
-
-
-export default function SignUp() {
+export default function LogIn() {
+    // const { switchToSignup } = useContext(AccountContext);
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -54,20 +50,6 @@ export default function SignUp() {
 			password: data.get('password'),
 		});
 	};
-
-	// const [active, setActive] = useState("login");
-
-	// const switchToSignup = () => {
-	// 	setTimeout(() => {
-	// 		setActive("signup");
-	// 	}, 400);
-	// };
-	
-	// const switchToLogin = () => {
-	// 	setTimeout(() => {
-	// 		setActive("login");
-	// 	}, 400);
-	// };
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -83,42 +65,14 @@ export default function SignUp() {
 				<BoxContainer>
 					<TopContainer>
 						<BackDrop />
-						{/* <Typography component="h2" variant="h5" sx={{zIndex: 10, color:"white"}}> */}
 						<HeaderContainer>
 							<HeaderText>
-								Sign up
+								Log In
 							</HeaderText>
 						</HeaderContainer>
-						{/* </Typography> */}
 					</TopContainer>
-					<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 5, ml:3, mr:3 }}>
-						<Grid container spacing={3}>
-							<Grid item xs={12} sm={6}>
-								<CssTextField
-									autoComplete="given-name"
-									name="firstName"
-									required
-									fullWidth
-									id="firstName"
-									label="First Name"
-									autoFocus
-									variant="outlined"
-									sx={{
-										borderRadius: 5
-									}}
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6}>
-								<CssTextField
-									required
-									fullWidth
-									id="lastName"
-									label="Last Name"
-									name="lastName"
-									variant="outlined"
-									autoComplete="family-name"
-								/>
-							</Grid>
+					<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 6, ml:3, mr:3 }}>
+						<Grid container spacing={5}>
 							<Grid item xs={12}>
 								<CssTextField
 									required
@@ -148,8 +102,8 @@ export default function SignUp() {
 						</SubmitButton>
 						<Grid container justifyContent="center">
 							<Grid item sx={{mt:1, mb:2}}>
-								<LoginLink href="#" variant="body2" >
-									Already have an account? Sign in
+								<LoginLink href="#" variant="body2">
+									Don't have an account? Sign Up
 								</LoginLink>
 							</Grid>
 						</Grid>

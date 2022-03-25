@@ -30,7 +30,7 @@ export const BlobContainer = styled.div`
 `;
 
 export const BoxContainer = styled.div`
-	width: 768px;
+	width: 576px;
 	min-height: 650px;
 	display: flex;
 	flex-direction: column;
@@ -41,8 +41,8 @@ export const BoxContainer = styled.div`
 	overflow: hidden;
 	margin: 100px auto !important;
 	z-index: 10;
-
-`;
+	
+	`;
 
 export const TopContainer = styled.div`
 	width: 100%;
@@ -52,7 +52,7 @@ export const TopContainer = styled.div`
 	/* justify-content: flex-end; */
 	padding: 0 1.8em;
 	padding-bottom: 5em;
-`;
+	`;
 
 export const BackDrop = styled.div`
 	width: 180%;
@@ -61,16 +61,16 @@ export const BackDrop = styled.div`
 	display: flex;
 	flex-direction: column;
 	border-radius: 40%;
-	transform: rotate(150deg);
-	top: -650px;
+	transform: rotate(130deg);
+	top: -600px;
 	left: -170px;
 	background: rgb(241, 196, 15);
 	background: linear-gradient(
-		60deg,
+		58deg,
 		rgba(241, 196, 15, 1) 20%,
 		rgba(243, 172, 18, 1) 100%
-	);
-`;
+		);
+		`;
 
 export const HeaderContainer = styled.div`
 	width: 100%;
@@ -78,22 +78,23 @@ export const HeaderContainer = styled.div`
 	margin-top: 50px;
 	display: flex;
 	flex-direction: column;
+	font-family: 'Pacifico';
 	text-align: left;
-`;
+	font-weight: 300;
+	`;
 
 export const HeaderText = styled.h2`
 	font-size: 60px;
-	font-weight: 500;
+	font-weight: 800;
 	line-height: 1.24;
 	color: #fff;
 	z-index: 10;
 	margin-top: 10px;
-	font-family: 'Pacifico';
-`;
+	`;
 
 export const SubmitButton = styled.button`
 	width: 50%;
-	height: 50px;
+	max-height: 100px;
 	background: linear-gradient(to right, rgb(241, 196, 15) 50%, transparent 50%);
 	background-size: 200%;
 	background-position: right;
@@ -101,10 +102,11 @@ export const SubmitButton = styled.button`
 	border: 2px solid rgb(241, 196, 15);
 	color: rgb(241, 196, 15);
 	margin: 2rem 1em;
-	padding: 0.25em 1em;
-	font-size: 20px;
-	font-weight: 800;
-
+	padding: 3px;
+	font-size: 22px;
+	font-weight: 500;
+	font-family: 'Pacifico';
+	
 	transition: all .3s ease-out;
 
 	&:hover{
