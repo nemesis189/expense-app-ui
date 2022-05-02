@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import {Link as RouterLink} from 'react-router-dom';
-import { AccountContext } from "../context/accountContext"; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,11 +10,20 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import FormLabel from '@mui/material/FormLabel';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BoxContainer, TopContainer, BackDrop, HeaderContainer, HeaderText, SubmitButton, LoginLink, BlobContainer } from './LogInForm.styles';
 import { withStyles } from '@mui/styles';
+
+import {login} from '../../store/serviceAPI';
+
+// import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import authSlice from "../../store/slices/auth";
+
 
 const theme = createTheme({
     typography: {
@@ -40,15 +48,41 @@ const CssTextField = withStyles({
 	}
 })(TextField);
 
-export default function LogIn() {
-    // const { switchToSignup } = useContext(AccountContext);
+
+export default function LogIn(props) {
+
+	const [userId, setUserId] = useState();
+	const [password, setPassword] = useState();
+	const [showError, setShowError] = useState(false)
+
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+
+	function handleUserLogin(credentials) {
+		console.log('inside login');
+		login(credentials, (res) => {
+			console.log('****************',res);
+			dispatch(
+				authSlice.actions.setAuthTokens({
+					token: res.data.access,
+					refreshToken: res.data.refresh,
+				})
+			);
+			dispatch(authSlice.actions.setAccount(res.data.user));
+			// setLoading(false);
+			navigate("/dashboard");
+		});
+		
+	}
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
+		// console.log("inside handlesubmit")
+		handleUserLogin({
+			"username":userId,
+			"password":password
 		});
 	};
 
@@ -84,6 +118,7 @@ export default function LogIn() {
 									name="email"
 									autoComplete="email"
 									variant="outlined"
+									onChange={(e) => setUserId(e.target.value)}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -96,7 +131,11 @@ export default function LogIn() {
 									id="password"
 									variant="outlined"
 									autoComplete="new-password"
+									onChange={(e) => setPassword(e.target.value)}
 								/>
+								{showError ?
+									<div >Invalid username or password</div>: null
+								}
 							</Grid>
 						</Grid>
 						<SubmitButton>
@@ -105,7 +144,7 @@ export default function LogIn() {
 						<Grid container justifyContent="center">
 							<Grid item sx={{mt:1, mb:2}}>
 									<Link component={RouterLink} to='/signup'>
-										<LoginLink href="#" variant="body2">
+										<LoginLink variant="body2">
 											Don't have an account? Sign Up
 										</LoginLink>
 									</Link>

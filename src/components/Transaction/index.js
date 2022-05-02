@@ -7,6 +7,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
+import {TransactionCategoryIcon} from './Transcation.styles';
 import {Wrapper} from './Transcation.styles';
 
 export default function Transaction({amount, mop, category, date, description}) {
@@ -15,7 +16,7 @@ export default function Transaction({amount, mop, category, date, description}) 
         <Wrapper>
             <Grid container spacing={4}>
                 <Grid item xs={2} md={2}>
-                    {category}
+                    <TransactionCategoryIcon category={category} />
                 </Grid>
                 <Grid item xs={10} md={10} className="rowSpacing">
                     <Grid container item  spacing={5}>

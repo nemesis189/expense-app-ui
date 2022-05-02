@@ -1,4 +1,6 @@
+import React from 'react';
 import styled from "styled-components";
+import ArticleIcon from '@mui/icons-material/Article';
 
 export const Wrapper = styled.div`
     margin-top: 1rem;
@@ -18,3 +20,23 @@ export const Wrapper = styled.div`
     }
 
 `;
+
+const CategoryIconWrapper = styled.div`
+    background: green;
+`;
+
+// ---------------------------------------------------
+
+
+export function TransactionCategoryIcon({category}) {
+    var icon = null;
+    if (category == 'Bills') {
+        icon =  <ArticleIcon />
+    }
+
+    return (
+        <CategoryIconWrapper>
+            {icon}
+        </CategoryIconWrapper>
+    )
+}

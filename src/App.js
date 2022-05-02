@@ -9,19 +9,36 @@ import LogIn from './components/LogInForm'
 import Dashboard from './components/Dashboard'
 import CreateEditTransaction from './components/CreateEditTransaction'
 
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import store, { persistor } from "./store";
+
 function App() {
 	return (
-		<div className="App">
-			<Router>
-				<Routes>
-					<Route path="/" element={<LogIn />} />
-					<Route path="/signup" element={<SignUp />} />
-					<Route path="/dashboard" element={<Dashboard />} />
-					<Route path="/create" element={<CreateEditTransaction />} />
-				</Routes>
-			</Router>
-			<GlobalStyle />
-		</div>
+		<Provider store={store}>
+			<PersistGate persistor={persistor} loading={null}>
+				<div className="App">
+					<Router>
+						<Routes>
+							<Route path="/" element={<LogIn />} />
+							<Route path="/signup" element={<SignUp />} />
+							<Route exact path="/dashboard" element={
+								<ProtectedRoute>
+									<Dashboard />
+								</ProtectedRoute>} 
+							/>
+							<Route exact path="/create" element={
+								<ProtectedRoute>
+									<CreateEditTransaction />
+								</ProtectedRoute>} 
+							/>
+						</Routes>
+					</Router>
+					<GlobalStyle />
+				</div>
+			</PersistGate>
+		</Provider>
 	);
 }
 

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {Link as RouterLink} from 'react-router-dom';
-import { AccountContext } from '../context/accountContext';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,6 +15,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BoxContainer, TopContainer, BackDrop, HeaderContainer, HeaderText, SubmitButton, LoginLink, BlobContainer } from './SignUpForm.styles';
 import { withStyles } from '@mui/styles';
+
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { useNavigate  } from "react-router-dom";
+import authSlice from "../../store/slices/auth";
 
 const theme = createTheme({
     typography: {
@@ -45,14 +49,76 @@ const CssTextField = withStyles({
 // const contextValue = { switchToSignup, switchToSignin };
 
 
-export default function SignUp() {
+const isPersistedState = stateName => {
+	const sessionState = sessionStorage.getItem(stateName);
+	return sessionState && JSON.parse(sessionState);
+}
 
-	const handleSubmit = (event) => {
+export default function SignUp() {
+	
+	const [user, setUser] = useState('');
+	const [token, setToken] = useState('');
+	
+	const [email, setEmail] = useState('');
+	const [first_name, setFirstName] = useState('');
+	const [last_name, setLastName] = useState('');
+	const [password, setPassword] = useState('');
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	
+	async function handleUserSignUp(credentials) {
+		const response = await axios
+		.post(process.env.REACT_APP_API_URL+'signup/', credentials)
+		.then((res) => {
+			console.log('****************',res);
+			dispatch(
+				authSlice.actions.setAuthTokens({
+					token: res.data.access,
+					refreshToken: res.data.refresh,
+				})
+			);
+			dispatch(authSlice.actions.setAccount(res.data.user));
+			// setLoading(false);
+			navigate("/dashboard");
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+			// .then(data =>  {return data.json()} );
+			// .then( dataJSON => { return dataJSON }); 
+		console.log('inside handle', response);
+		let responseJSON = await response.json();
+		console.log('JSON DATA', responseJSON);
+		return responseJSON;
+	}
+
+	function handleSubmit (event) {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
+
+		const name = data.get('firstName') + data.get('lastName');
+		const email = data.get('email');
+		const password = data.get('password');
+		var today = new Date(),
+            date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+		
+		handleUserSignUp({
+			'u_id':7,
+			'u_name': name,
+			'u_email':email,
+			'u_password':password,
+			'u_creation_date':date
+		}).then((res) => {
+
+			console.log(res);
+			console.log(res.data);
+
+			if (res) {
+				if (!isPersistedState(res.user.u_id)) {
+						sessionStorage.setItem(res.user.u_email, JSON.stringify(res.token))
+					}
+				}
 		});
 	};
 
@@ -107,6 +173,8 @@ export default function SignUp() {
 									sx={{
 										borderRadius: 5
 									}}
+									onChange={(e) => setFirstName(e.target.value)}
+									value={first_name}
 								/>
 							</Grid>
 							<Grid item xs={12} sm={6}>
@@ -118,6 +186,8 @@ export default function SignUp() {
 									name="lastName"
 									variant="outlined"
 									autoComplete="family-name"
+									onChange={(e) => setLastName(e.target.value)}
+									value={last_name}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -129,6 +199,8 @@ export default function SignUp() {
 									name="email"
 									autoComplete="email"
 									variant="outlined"
+									onChange={(e) => setEmail(e.target.value)}
+									value={email}
 								/>
 							</Grid>
 							<Grid item xs={12}>
@@ -141,6 +213,8 @@ export default function SignUp() {
 									id="password"
 									variant="outlined"
 									autoComplete="new-password"
+									onChange={(e) => setPassword(e.target.value)}
+									value={password}
 								/>
 							</Grid>
 						</Grid>

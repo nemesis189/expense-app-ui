@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import { AccountContext } from '../context/accountContext';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
+import React, { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,11 +14,19 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BoxContainer, TopContainer, BackDrop, HeaderContainer, HeaderText, SubmitButton, LoginLink, BlobContainer } from './CreateEditTransaction.styles';
+
 import { withStyles } from '@mui/styles';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { textAlign } from "@mui/system";
+
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { useNavigate  } from "react-router-dom";
+import {getTransactionCategories, getTransactionTypes, getMopList, createNewTransaction} from '../../store/serviceAPI';
+import categoriesSlice from "../../store/slices/categories";
+import transactionTypeSlice from "../../store/slices/transaction_types";
+import mopSlice from "../../store/slices/mop";
 
 const theme = createTheme({
     typography: {
@@ -38,7 +41,7 @@ const theme = createTheme({
 					// width:'300px',
 					fontSize: '20px',
 					borderRadius: '4px',
-					'&&.income': {
+					'&&.Income': {
 						color: 'green',
 						'&&:hover': {
 							background:'rgba(0,135,62,0.2)',
@@ -48,7 +51,7 @@ const theme = createTheme({
 							color: 'white',
 						},
 					},
-					'&&.expense': {
+					'&&.Expense': {
 						color: 'red',
 						'&&:hover': {
 							background:'rgba(171,35,40,0.2)',
@@ -112,36 +115,63 @@ const CssTextField = withStyles({
 
 
 export default function CreateEditTransaction() {
-	const categories = ["Food and Dining", "Shopping", "Bills", "Gifts and Donations", "Travelling", "Medical", "Salary", "Sold Items"]
-	const [value, setValue] = useState(null);
 
-	const [category, setCategory] = useState('');
-	const handleCategory = (event) => {
-		setCategory(event.target.value);
-	};
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		console.log({
-			email: data.get('email'),
-			password: data.get('password'),
+	useEffect(() => {
+		getTransactionCategories((categories) => {
+			dispatch(categoriesSlice.actions.setCategoryList(categories));
 		});
+		
+		getTransactionTypes((types) => {
+			dispatch(transactionTypeSlice.actions.setTransactionTypeList(types));
+		});
+		
+		getMopList((mop) => {
+			dispatch(mopSlice.actions.setMopList(mop));
+		});
+
+	}, [getTransactionCategories, categoriesSlice, getTransactionTypes, transactionTypeSlice, getMopList, mopSlice])
+
+	const [date, setDate] = useState(null);
+	const [category, setCategory] = useState('');
+	const [mop, setMop] = useState('');
+	const [transactionType, setTransactionType] = useState('');
+	const [transAmount, setTransAmount] = useState();
+	const [description, setDescription] = useState();
+	
+	const categories_list = useSelector(state => state.categories.categoryList);
+	const trans_type_list = useSelector(state => state.transactionType.transactionTypeList);
+	const mop_list = useSelector(state => state.mop.mopList);
+	const user_email = useSelector(state => state.auth.account.u_email)
+
+	const handleCreate = (event) => {
+		event.preventDefault();
+		console.log("inside handleCreate", date.getDate())
+
+		var d = (date.toString()).split(' ');
+		d[2] = d[2] + ',';
+		var formatted_date = date.getFullYear().toString() + '-' + date.getMonth().toString() + '-' +  date.getDate().toString();
+
+
+		console.log(formatted_date);
+		console.log("STATES:  ", mop, transactionType, category)
+		let response = createNewTransaction({
+			'tr_amount': transAmount,
+			'tr_date':formatted_date,
+			'tr_note':description,
+			"u": user_email,
+			"tr_type": transactionType,
+			"mop": mop,
+			"cat": category
+		}, () => {
+			navigate("/dashboard");
+		})
+		// .then();
+		console.log('RESPONSE XOXOXOXO', response);
 	};
 
-	// const [active, setActive] = useState("login");
-
-	// const switchToSignup = () => {
-	// 	setTimeout(() => {
-	// 		setActive("signup");
-	// 	}, 400);
-	// };
-	
-	// const switchToLogin = () => {
-	// 	setTimeout(() => {
-	// 		setActive("login");
-	// 	}, 400);
-	// };
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -155,27 +185,24 @@ export default function CreateEditTransaction() {
 					</div>
 				</BlobContainer>
 				<BoxContainer>
+
 					<TopContainer>
 						<BackDrop />
-						{/* <Typography component="h2" variant="h5" sx={{zIndex: 10, color:"white"}}> */}
 						<HeaderContainer>
 							<HeaderText>
 								Create/Edit Transaction
 							</HeaderText>
 						</HeaderContainer>
-						{/* </Typography> */}
 					</TopContainer>
-					<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 0, ml:3, mr:3 }}>
 
+					<Box component="form" noValidate onSubmit={handleCreate} sx={{ mt: 0, ml:3, mr:3 }}>
 						<Grid container spacing={3}>
 							<Grid item xs={12} sm={12}>
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
 									<DatePicker
 										label="Date of Transaction"
-										value={value}
-										onChange={(newValue) => {
-											setValue(newValue);
-										}}
+										value={date}
+										onChange={(e) => setDate(e)}
 										renderInput={(params) => <CssTextField {...params} fullWidth />} 
 									/>
 								</LocalizationProvider>
@@ -187,40 +214,66 @@ export default function CreateEditTransaction() {
 									id="amount"
 									label="Amount"
 									name="amount"
+									value={transAmount}
+									onChange={(e) => setTransAmount(e.target.value)}
 									variant="outlined"
 									autoComplete="transaction-amount"
 								/>
 							</Grid>
 							<Grid item xs={12}>
-							<FormControl >
-								<FormLabel id="income-expense-buttons-label" sc={{textAlign:"left"}}>Type:</FormLabel>
-								<RadioGroup
-									className="income-expense-buttons"
-									defaultValue="expense"
-									name="income-expense-buttons"
-									row
-								>
-									<FormControlLabel value="expense" control={<Radio icon={<span>Expense</span>} checkedIcon={<span>Expense</span>} className="expense">Expense</Radio>} label='' />
-									<FormControlLabel value="income" control={<Radio icon={<span>Income</span>} checkedIcon={<span>Income</span>} className="income">Income</Radio>} label=''/>
-								</RadioGroup>
-							</FormControl>
+								<FormControl >
+									<FormLabel id="income-expense-buttons-label" sc={{textAlign:"left"}}>Type:</FormLabel>
+									<RadioGroup
+										className="income-expense-buttons"
+										name="income-expense-buttons"
+										value={transactionType}
+										row
+										onChange={(e) => setTransactionType(e.target.value)}
+									>
+										{
+											trans_type_list.map(type => (
+												<FormControlLabel key={type.url} value={type.url} control={<Radio icon={<span>{type.tr_type_name}</span>} checkedIcon={<span>{type.tr_type_name}</span>} className={type.tr_type_name}>{type.tr_type_name}</Radio>} label='' />
+											))
+											// <FormControlLabel value="income" control={<Radio icon={<span>Income</span>} checkedIcon={<span>Income</span>} className="income">Income</Radio>} label=''/>
+										}
+									</RadioGroup>
+								</FormControl>
 							</Grid>
 							<Grid item xs={12}>
-							<CssTextField
-								fullWidth
-								id="outlined-select-category"
-								select
-								label="Category"
-								value={category}
-								onChange={handleCategory}
-								helperText="Please select category"
-								>
-								{categories.map((option) => (
-									<MenuItem key={option} value={option}>
-										{option}
-									</MenuItem>
-								))}
-							</CssTextField>
+								<CssTextField
+									fullWidth
+									id="outlined-select-category"
+									select
+									label="Category"
+									value={category}
+									onChange={(e) => {
+										setCategory(e.target.value);
+									}}
+									helperText="Please select category"
+									>
+									{categories_list.map((option) => (
+										<MenuItem key={option.url} name={option.url} value={option.url} id={option.url} >
+											{option.cat_name}
+										</MenuItem>
+									))}
+								</CssTextField>
+							</Grid>
+							<Grid item xs={12}>
+								<CssTextField
+									fullWidth
+									id="outlined-select-mop"
+									select
+									label="Mode Of Payment"
+									value={mop}
+									onChange={(e) => setMop(e.target.value)}
+									helperText="Please select Mode Of Payment"
+									>
+									{mop_list.map((option) => (
+										<MenuItem key={option.url} name={option.url} value={option.url} id={option.url} >
+											{option.mop_name}
+										</MenuItem>
+									))}
+								</CssTextField>
 							</Grid>
 							<Grid item xs={12}>
 								<CssTextField
@@ -228,6 +281,8 @@ export default function CreateEditTransaction() {
 									name="description"
 									label="Description"
 									id="description"
+									value={description}
+									onChange={(e) => {setDescription(e.target.value);}}
 									variant="outlined"
 									autoComplete="description"
 								/>
