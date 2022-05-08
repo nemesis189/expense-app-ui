@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     max-width: 750px;
-    height: 150px;
+    height: 200px;
     display: flex;
 	flex-direction: row;
 	border-radius: 19px;
-	background-color: rgba(241, 196, 15);
+	background-color: rgba(25, 118, 210, 0.3);
 	box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
 	position: relative;
 	/* overflow: hidden; */
@@ -48,7 +48,7 @@ export const Content = styled.div`
 	.arrow-icon {
 		background: transparent;
 		display:flex;
-		align-self:center;
+		align-content:center;
 		margin-left: 10px;
 		color: rgba(0,0,0,0.3);
 		font-size: 80px;

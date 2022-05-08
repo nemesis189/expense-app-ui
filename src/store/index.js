@@ -17,6 +17,7 @@ import categoriesSlice from "./slices/categories";
 import transactionSlice from "./slices/transactions";
 import transactionTypeSlice from "./slices/transaction_types";
 import mopSlice from "./slices/mop";
+import navbarSlice from "./slices/navbar";
 
 const rootReducer = combineReducers({
 	auth: authSlice.reducer,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
 	transactions: transactionSlice.reducer,
 	transactionType: transactionTypeSlice.reducer,
 	mop: mopSlice.reducer,
+	navbar: navbarSlice.reducer,
 });
 
 const persistedReducer = persistReducer(

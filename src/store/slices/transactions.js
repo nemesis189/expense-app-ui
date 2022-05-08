@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = { 
-    transactionList: []
+    transactionList: [],
+    currentMonthTransactionList: [],
 };
 
 const transactionSlice = createSlice({
@@ -10,7 +11,10 @@ const transactionSlice = createSlice({
     reducers: {
         setTransactionList(state, action) {
             state.transactionList = action.payload;
-        }
+        },
+        setCurrentMonthTransactionList(state, action) {
+            state.currentMonthTransactionList = action.payload;
+        },
     },
 });
 

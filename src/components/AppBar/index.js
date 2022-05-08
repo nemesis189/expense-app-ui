@@ -12,61 +12,91 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 
+import LogoImg from '../../assets/expense_logo.jpg';
+import {ExpenseLogo} from './AppBar.styles';
+
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import navbarSlice from "../../store/slices/navbar";
+import authSlice from "../../store/slices/auth";
 
 
-const pages = [
-	{
-		page: 'Dasboard',
-		link: '/dashboard'
-	},
-	{
-		page: 'Reports',
-		link: '/dashboard'
-	}];
-const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
+	const pages = [
+		{
+			page: 'Dasboard',
+			link: '/dashboard'
+		},
+		{
+			page: 'Reports',
+			link: '/dashboard'
+		}
+	];
+	
+	const settings = [ 'Profile', 'Logout'];
+
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
-	const handleOpenNavMenu = (event) => {
-		console.log(anchorElNav, anchorElUser);
+	const selectedPage = useSelector(state => state.navbar.selectedPage);
+	console.log("SELECTED PAGE", selectedPage)
+
+	const handleLogout = () => {
+		console.log('HANDLELOG OUT')
+        dispatch(authSlice.actions.logout());
+        navigate("/");
+    };
+
+	function handleOpenNavMenu (event) {
+		console.log('handleOpenNavMenu',anchorElNav, anchorElUser);
 		setAnchorElNav(event.currentTarget);
 	};
-	const handleOpenUserMenu = (event) => {
-		console.log(anchorElNav, anchorElUser);
+	function handleOpenUserMenu (event) {
+		console.log('handleOpenUserMenu',anchorElNav, anchorElUser);
 		setAnchorElUser(event.currentTarget);
 	};
 
-	const handleCloseNavMenu = (event, link) => {
-		console.log(anchorElNav, anchorElUser);
+	function handleCloseNavMenu (event, link) {
+		console.log('handleCloseNavMenu',anchorElNav, anchorElUser);
 		if(link) {
 			navigate(link);
-				console.log(event.currentTarget);
+			console.log(event.currentTarget);
 		}
+		dispatch(navbarSlice.actions.setSelectedPage(event.currentTarget))
 		setAnchorElNav(null);
+
 	};
 
-	const handleCloseUserMenu = () => {
-		console.log(anchorElNav, anchorElUser);
+	const handleCloseUserMenu = (event) => {
+		console.log('handleCloseUserMenu',anchorElNav, anchorElUser);
+		
+		console.log('logout clicked ',event.target.getAttribute('name'))
+		if (event.target.getAttribute('name') === 'Logout') {
+			handleLogout();
+		}
 		setAnchorElUser(null);
+		
+		// event.preventDefault();
 	};
 
 	return (
 		<AppBar position="static">
-			<Container maxWidth="xl">
+			<Container style={{maxWidth:'1920px', paddingLeft:"50px", paddingRight:"50px"}}>
 				<Toolbar disableGutters>
-					<Typography
+					{/* <Typography
 						variant="h5"
 						noWrap
 						component="div"
 						sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
 					>
 						Expense Tracker
-					</Typography>
+					</Typography> */}
+
+					<ExpenseLogo src={LogoImg}/>
 
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
 						<IconButton
@@ -74,7 +104,7 @@ function ResponsiveAppBar() {
 							aria-label="account of current user"
 							aria-controls="menu-appbar"
 							aria-haspopup="true"
-							onClick={handleOpenNavMenu}
+							onClick={event => handleOpenNavMenu(event)}
 							color="inherit"
 						>
 							<MenuIcon />
@@ -92,13 +122,14 @@ function ResponsiveAppBar() {
 								horizontal: 'left',
 							}}
 							open={Boolean(anchorElNav)}
-							onClose={handleCloseNavMenu}
+							onClose={event => handleCloseNavMenu(event)}
 							sx={{
 								display: { xs: 'block', md: 'none' },
 							}}
+							variant='selectedMenu'
 						>
 						{pages.map((page) => (
-							<MenuItem key={page.page} onClick={handleCloseNavMenu}>
+							<MenuItem key={page.page} onClick={e => handleCloseNavMenu(e, page.link)}>
 								<Typography textAlign="center">{page.page}</Typography>
 							</MenuItem>
 						))}
@@ -128,7 +159,7 @@ function ResponsiveAppBar() {
 
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+							<IconButton onClick={event => handleOpenUserMenu(event)} sx={{ p: 0 }}>
 								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
 							</IconButton>
 						</Tooltip>
@@ -146,10 +177,10 @@ function ResponsiveAppBar() {
 								horizontal: 'right',
 							}}
 							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
+							onClose={(event) => handleCloseUserMenu(event)}
 						>
 							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
+								<MenuItem key={setting} name={setting} onClick={(event) => handleCloseUserMenu(event)}>
 									<Typography textAlign="center">{setting}</Typography>
 								</MenuItem>
 							))}
