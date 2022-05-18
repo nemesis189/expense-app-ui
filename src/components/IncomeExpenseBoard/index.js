@@ -2,14 +2,14 @@ import React, {useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 
-import { Wrapper, Content } from './MonthlyIncomeExpense.styles';
+import { Wrapper, Content } from './IncomeExpenseBoard.styles';
 import { createTheme, Typography, ThemeProvider } from '@mui/material';
 
-import { getAllTransactionsByUser } from '../../store/serviceAPI';
 import {useSelector, useDispatch } from "react-redux";
 import transactionSlice from "../../store/slices/transactions";
-import {calculateMonthlyIncomeExpense} from '../../utils/transactionUtils'
+import {calculateIncomeExpense} from '../../utils/transactionUtils'
 
 const theme = createTheme({
     typography: {
@@ -18,9 +18,23 @@ const theme = createTheme({
     },
 })
 
-export default function MonthlyIncomeExpense() {
-    const transactionList = useSelector(state => state.transactions.currentMonthTransactionList);
-    const {income, expense} = calculateMonthlyIncomeExpense(transactionList);
+export default function IncomeExpenseBoard(props) {
+
+    var month = props.month;
+    var year = props.year;
+    const sidebar = props.sidebar;
+    
+    let current_month = '_' + String((new Date()).getMonth() + 1);
+    let current_year = '_' + String((new Date()).getFullYear());
+
+    month = month ? month : current_month;
+    year = year ? year : current_year;
+    console.log(" HERHERHEHREHRHERHEHR", props, typeof(current_month), month, year, month === undefined);
+
+    const periodWiseTransactionList = useSelector(state => state.transactions.periodWiseTransactionList);
+    console.log('PERIOD WISETRASNACITON LIST', periodWiseTransactionList);
+    const currentMonthTransactionList = periodWiseTransactionList[year][month];
+    const {income, expense} = calculateIncomeExpense(currentMonthTransactionList);
     console.log("INCOMEEXPENSE ", income, expense)
     
     return (
@@ -30,7 +44,7 @@ export default function MonthlyIncomeExpense() {
                 <Content>
                     <Grid container spacing={5}>
                         <Grid container item lg={12}>
-                            <Typography component="h5" variant="h5">
+                            <Typography component="h6" variant="h6" sx={{fontWeight:900}}>
                                 This Month:
                             </Typography>
                         </Grid>
@@ -45,7 +59,7 @@ export default function MonthlyIncomeExpense() {
                                             {/* <Typography component="h5" variant="h5">
                                                 Income
                                             </Typography> */}
-                                            <Typography component="h4" variant="h4">
+                                            <Typography component="h5" variant="h5">
                                                 ₹{income}
                                             </Typography>
                                         </Grid>
@@ -62,7 +76,7 @@ export default function MonthlyIncomeExpense() {
                                             {/* <Typography component="h5" variant="h5">
                                                 Expenditure
                                             </Typography> */}
-                                            <Typography component="h4" variant="h4">
+                                            <Typography component="h5" variant="h5">
                                                 ₹{expense}
                                             </Typography>
                                         </Grid>

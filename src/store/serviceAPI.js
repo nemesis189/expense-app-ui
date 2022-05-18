@@ -16,12 +16,13 @@ export function login(credentials, callback) {
 
 export function getAllTransactionsByUser(curr_user, callback) {
     console.log('CURRENT USER',curr_user);
+    console.log('INSIDE CALL FOR ALL TRANACTIONS BY A USER',curr_user);
     axios
     .get(process.env.REACT_APP_API_URL+'transactions-by-user/'+ curr_user)
     .then((res) => {
-        console.log(res);
-        if (callback != null) {
-            callback(res.data);
+        console.log('all transactions by user',res);
+        if (callback) {
+            callback(res.data.transactions, res.data.ordered_by_time_period[0]);
         }
     })
     .catch((err) => {
@@ -35,7 +36,7 @@ export function getTransactionCategories(callback) {
     .then((res) => {
         console.log(res);
         if (callback != null) {
-            console.log('categories list',res.data);
+            // console.log('categories list',res.data);
             callback(res.data);
         }
     })
@@ -50,7 +51,7 @@ export function getTransactionTypes(callback) {
     .then((res) => {
         console.log(res);
         if (callback != null) {
-            console.log('transaction types list',res.data);
+            // console.log('transaction types list',res.data);
             callback(res.data);
         }
     })
@@ -65,7 +66,7 @@ export function getMopList(callback) {
     .then((res) => {
         console.log(res);
         if (callback != null) {
-            console.log('mop list',res.data);
+            // console.log('mop list',res.data);
             callback(res.data);
         }
     })
@@ -78,6 +79,17 @@ export function createNewTransaction(transaction_entry, callback) {
     
     axios
 		.post(process.env.REACT_APP_API_URL+'transact/', transaction_entry	)
+		.then((res) => {
+            callback();
+		}) 
+		.catch((err) => {
+			console.log('CHAKNA',err);
+		});
+}
+export function updateTransaction(transaction_entry, id, callback) {
+    console.log('INSIDE UPDATE',transaction_entry);
+    axios
+		.patch(process.env.REACT_APP_API_URL+'transact/'+id+'/', transaction_entry	)
 		.then((res) => {
             callback();
 		}) 

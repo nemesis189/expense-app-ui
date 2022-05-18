@@ -1,48 +1,26 @@
 import React, {useEffect} from 'react';
 
 import TransactionList from '../TransactionList'
-import MonthlyIncomeExpense from '../MonthlyIncomeExpense'
-import CreateEditTransaction from '../CreateEditTransaction'
+import IncomeExpenseBoard from '../IncomeExpenseBoard'
 import ResponsiveAppBar from '../AppBar'
 
 import { AddTransaction, Wrapper } from './Dashboard.styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
+
 import Grid from '@mui/material/Grid';
 import { Typography } from '@mui/material';
 
 
-import authSlice from "../../store/slices/auth";
-import transactionSlice from "../../store/slices/transactions";
-import {useSelector, useDispatch } from "react-redux";
 import { useNavigate  } from "react-router-dom";
+import useSetAllTransactions from '../../hooks/useSetAllTransactions';
 
-import {filterTransactionsForCurrentMonth} from '../../utils/transactionUtils'
-import {getAllTransactionsByUser} from "../../store/serviceAPI";
 
 export default function Dashboard() {
-    const dispatch = useDispatch();
-	const navigate = useNavigate();
-    
-    const curr_user = useSelector(state => state.auth.account.u_email)
-    useEffect(() => {
-        getAllTransactionsByUser(curr_user, (transactions) => {
-            dispatch(transactionSlice.actions.setTransactionList(transactions.transactions));
-            
-            let currMonthTransactionList = filterTransactionsForCurrentMonth(transactions.transactions);
-            dispatch(transactionSlice.actions.setCurrentMonthTransactionList(currMonthTransactionList));
-        });
-    }, [filterTransactionsForCurrentMonth, getAllTransactionsByUser, transactionSlice])
-    
-    
-    const allTransactions = useSelector(state => state.transactions.transactionList);
-    console.log('ALL TRANSACTIONS',allTransactions);
+    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        dispatch(authSlice.actions.logout());
-        navigate("/");
-    };
+    const [allTransactions, orderedByTimePeriod] = useSetAllTransactions();
+    console.log('ALL TRANSACTIONS',allTransactions, orderedByTimePeriod);
 
     const addTransaction = () => {
         navigate("/create");
@@ -53,17 +31,17 @@ export default function Dashboard() {
             <ResponsiveAppBar />
             <Wrapper>
                     <Grid container item xs={12} md={12} spacing={5} >
-                        <Grid container item md={4}>
+                        <Grid container item md={4} >
                             <Grid item md={12} >
-                                <MonthlyIncomeExpense />
+                                <IncomeExpenseBoard />
                             </Grid>
                             <Grid container item md={12}
                                 alignItems="center"
                                 justifyContent="center"
                                 direction="column"
                             >
-                                <AddTransaction onClick={addTransaction}>
-                                    <IconButton className='addTransaction'>
+                                <AddTransaction >
+                                    <IconButton className='addTransaction' onClick={addTransaction}>
                                         <AddCircleIcon fontSize="inherit"/>
                                         <Typography component="h5" variant="h5" sx={{m:'10px'}}>
                                             Create Transaction

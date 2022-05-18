@@ -1,18 +1,13 @@
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-    /* max-width: 750px; */
-    /* height: 650px; */
-    /* max-height: 650px; */
+    /* max-width: 90%; */
+
+	padding: 0 4rem;
+    height: 90%;
     display: flex;
 	flex-direction: column;
-	border-radius: 19px;
-	border: 1px solid rgba(0,0,0,0.2);
-	/* background-color: rgba(241, 196, 15); */
-	box-shadow: 0 0 2px 0 rgba(15, 15, 15, 0.28);
-	position: relative;
-	/* overflow: hidden; */
-	margin: 50px auto !important;
+	position: block;
 	z-index: 10;
 	
 	& .MuiDataGrid-columnHeaders {
@@ -34,6 +29,25 @@ export const Wrapper = styled.div`
 `;
 
 export const Content = styled.div`
-	padding: 50px;
+	border-radius: 19px;
+	border: 1px solid rgba(0,0,0,0.2);
+    height: 100%;
+/* padding: 50px; */
 	/* width: 100%; */
+`;
+
+export const IconContent = styled.div`
+    font-size: 20px;
+
+    @media (min-width: 750px){
+        font-size: 14px;
+    }
+`;
+
+export const IconWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;

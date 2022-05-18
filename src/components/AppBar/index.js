@@ -30,7 +30,7 @@ function ResponsiveAppBar() {
 		},
 		{
 			page: 'Reports',
-			link: '/dashboard'
+			link: '/reports'
 		}
 	];
 	
@@ -72,7 +72,7 @@ function ResponsiveAppBar() {
 	};
 
 	const handleCloseUserMenu = (event) => {
-		console.log('handleCloseUserMenu',anchorElNav, anchorElUser);
+		console.log('handleCloseUserMenu', event.target);
 		
 		console.log('logout clicked ',event.target.getAttribute('name'))
 		if (event.target.getAttribute('name') === 'Logout') {
@@ -86,16 +86,8 @@ function ResponsiveAppBar() {
 	return (
 		<AppBar position="static">
 			<Container style={{maxWidth:'1920px', paddingLeft:"50px", paddingRight:"50px"}}>
-				<Toolbar disableGutters>
-					{/* <Typography
-						variant="h5"
-						noWrap
-						component="div"
-						sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
-					>
-						Expense Tracker
-					</Typography> */}
 
+				<Toolbar disableGutters>
 					<ExpenseLogo src={LogoImg}/>
 
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -181,7 +173,7 @@ function ResponsiveAppBar() {
 						>
 							{settings.map((setting) => (
 								<MenuItem key={setting} name={setting} onClick={(event) => handleCloseUserMenu(event)}>
-									<Typography textAlign="center">{setting}</Typography>
+									{setting}
 								</MenuItem>
 							))}
 						</Menu>

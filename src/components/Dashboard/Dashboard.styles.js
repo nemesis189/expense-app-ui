@@ -5,12 +5,13 @@ export const AddTransaction = styled.div`
     height: 150px;
     display: flex;
     flex-direction: row;
-	margin: 20px auto !important;
+	margin: auto auto !important;
     align-items: center;
     justify-items: center;
 	border-radius: 19px;
     
     .addTransaction{
+        border: 3px solid rgba(0, 127.5, 0, 0.3);
         border-radius: 19px;
         /* position: absolute; */
         /* right: 0; */
@@ -34,7 +35,8 @@ export const AddTransaction = styled.div`
 export const Wrapper = styled.div`
     width: 100%;
     height: 90vh;
-    margin: auto 20px;
+    margin: 50px 20px auto 20px;
     padding-left: 50px;
     padding-right: 50px;
+
 `;

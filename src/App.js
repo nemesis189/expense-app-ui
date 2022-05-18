@@ -8,6 +8,7 @@ import SignUp from './components/SignUpForm'
 import LogIn from './components/LogInForm'
 import Dashboard from './components/Dashboard'
 import CreateEditTransaction from './components/CreateEditTransaction'
+import ReportsPage from './components/ReportsPage';
 
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
@@ -31,6 +32,11 @@ function App() {
 							<Route exact path="/create" element={
 								<ProtectedRoute>
 									<CreateEditTransaction />
+								</ProtectedRoute>} 
+							/>
+							<Route exact path="/reports" element={
+								<ProtectedRoute>
+									<ReportsPage />
 								</ProtectedRoute>} 
 							/>
 						</Routes>

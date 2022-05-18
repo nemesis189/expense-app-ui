@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import ArticleIcon from '@mui/icons-material/Article';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
@@ -14,84 +13,38 @@ import GoogleIcon from '@mui/icons-material/Google';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import MoneyIcon from '@mui/icons-material/Money';
 
-const Content = styled.div`
-    font-size: 20px;
-    /* max-width: 50px; */
-    /* max-height: 50px; */
-`;
-
-const Wrapper = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
 export function getCategoryIcon(category) {
     if(category == 'Bills') {
         return (
-            <Wrapper>
-                <Content>
-                    <ArticleIcon sx={{ fontSize: 40 }}/>
-                </Content>
-            </Wrapper>
+            <ArticleIcon />
         )
     } else if(category == 'Food and Dining') {
         return (
-            <Wrapper>
-                <Content>
-                    <RestaurantIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <RestaurantIcon  />
         )
     } else if(category == 'Shopping') {
         return (
-            <Wrapper>
-                <Content>
-                    <ShoppingCartIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <ShoppingCartIcon  />
         )
     } else if(category == 'Gifts and Donations') {
         return (
-            <Wrapper>
-                <Content>
-                    <RedeemIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <RedeemIcon  />
         )
     } else if(category == 'Travelling') {
         return (
-            <Wrapper>
-                <Content>
-                    <DirectionsBusFilledSharpIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <DirectionsBusFilledSharpIcon  />
         )
     } else if(category == 'Medical') {
         return (
-            <Wrapper>
-                <Content>
-                    <LocalHospitalSharpIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <LocalHospitalSharpIcon  />
         )
     } else if(category == 'Salary') {
         return (
-            <Wrapper>
-                <Content>
-                    <AttachMoneyIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <AttachMoneyIcon  />
         )
     } else if(category == 'Sold Items') {
         return (
-            <Wrapper>
-                <Content>
-                    <SellIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <SellIcon  />
         )
     }
 }
@@ -100,27 +53,15 @@ export function getCategoryIcon(category) {
 export function getMopIcon(mop) {
     if(mop == 'Cash') {
         return (
-            <Wrapper>
-                <Content>
-                    <MoneyIcon sx={{ fontSize: 40 }}/>
-                </Content>
-            </Wrapper>
+            <MoneyIcon />
         )
     } else if(mop == 'Card') {
         return (
-            <Wrapper>
-                <Content>
-                    <CreditCardIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <CreditCardIcon  />
         )
     } else if(mop == 'UPI') {
         return (
-            <Wrapper>
-                <Content>
-                    <GoogleIcon sx={{ fontSize: 40 }} />
-                </Content>
-            </Wrapper>
+            <GoogleIcon  />
         )
     }
 }

@@ -69,7 +69,7 @@ export default function SignUp() {
 	
 	async function handleUserSignUp(credentials) {
 		const response = await axios
-		.post(process.env.REACT_APP_API_URL+'signup/', credentials)
+		.post(process.env.REACT_APP_API_URL+'register/', credentials)
 		.then((res) => {
 			console.log('****************',res);
 			dispatch(
@@ -104,7 +104,6 @@ export default function SignUp() {
             date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 		
 		handleUserSignUp({
-			'u_id':7,
 			'u_name': name,
 			'u_email':email,
 			'u_password':password,

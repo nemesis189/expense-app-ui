@@ -22,8 +22,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { useNavigate  } from "react-router-dom";
-import {getTransactionCategories, getTransactionTypes, getMopList, createNewTransaction} from '../../store/serviceAPI';
+import { useNavigate, useLocation} from "react-router-dom";
+import {getTransactionCategories, getTransactionTypes, getMopList, createNewTransaction, updateTransaction} from '../../store/serviceAPI';
 import categoriesSlice from "../../store/slices/categories";
 import transactionTypeSlice from "../../store/slices/transaction_types";
 import mopSlice from "../../store/slices/mop";
@@ -116,48 +116,94 @@ const CssTextField = withStyles({
 
 export default function CreateEditTransaction() {
 
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		getTransactionCategories((categories) => {
-			dispatch(categoriesSlice.actions.setCategoryList(categories));
-		});
-		
-		getTransactionTypes((types) => {
-			dispatch(transactionTypeSlice.actions.setTransactionTypeList(types));
-		});
-		
-		getMopList((mop) => {
-			dispatch(mopSlice.actions.setMopList(mop));
-		});
-
-	}, [getTransactionCategories, categoriesSlice, getTransactionTypes, transactionTypeSlice, getMopList, mopSlice])
-
-	const [date, setDate] = useState(null);
-	const [category, setCategory] = useState('');
-	const [mop, setMop] = useState('');
-	const [transactionType, setTransactionType] = useState('');
-	const [transAmount, setTransAmount] = useState();
-	const [description, setDescription] = useState();
 	
 	const categories_list = useSelector(state => state.categories.categoryList);
 	const trans_type_list = useSelector(state => state.transactionType.transactionTypeList);
 	const mop_list = useSelector(state => state.mop.mopList);
 	const user_email = useSelector(state => state.auth.account.u_email)
+	console.log('LISTSSSSSSSS',categories_list, trans_type_list, mop_list, user_email);
 
-	const handleCreate = (event) => {
+	// All the form value setters
+	const [date, setDate] = useState(null);
+	const [category, setCategory] = useState(categories_list[0].cat_name);
+	const [mop, setMop] = useState(mop_list[0].mop_name);
+	const [transactionType, setTransactionType] = useState(trans_type_list[0].tr_type_name);
+	const [transAmount, setTransAmount] = useState();
+	const [description, setDescription] = useState();
+	
+	const [header, setHeader] = useState('Create');
+	const [editMode, setEditMode] = useState(false); 
+	
+	const getCategoryUrl = cat => {
+		let url = '';
+		categories_list.map(c => {
+			if(c.cat_name == cat) {
+				url = c.url;
+			}
+			if (url) return; 
+		});
+		return url;
+	}
+
+	const getMopUrl = mop => {
+		let url = '';
+		mop_list.map(m => {
+			if(m.mop_name == mop) {
+				url = m.url
+			};
+			if(url) return;
+		});
+		return url;
+	}
+
+	const getTransTypeUrl = trtype => {
+		let url = '';
+		trans_type_list.map(tt => {
+			if(tt.tr_type_name == trtype) {
+				url = tt.url
+			};
+			if(url) return;
+		});
+		return url;
+	}
+	
+	// get data to fill if editing a transaction
+	const {state} = useLocation();
+	var data = state;
+
+	useEffect(() => {
+	
+		if (data) {
+			console.log("PROPS ARE HERE",data);
+			setEditMode(true);
+			// if (editMode) {
+				setDate(new Date(data.date));
+				setCategory(getCategoryUrl(data.category));
+				setMop(getMopUrl(data.mop));
+				setTransactionType(getTransTypeUrl(data.tr_type));
+				setTransAmount(data.amount);
+				setDescription(data.description);
+				setHeader('Edit');
+			// }
+			console.log(getCategoryUrl(data.category))
+			data = null;
+		};
+		console.log(date,category, mop, transactionType, transAmount, description);
+		// setEditMode(false);
+
+	},[data, setDate, setCategory, setMop, setTransactionType, setTransAmount, setDescription, setHeader]);
+
+	const handleCreateEdit = (event) => {
 		event.preventDefault();
-		console.log("inside handleCreate", date.getDate())
+		console.log("inside handleCreate", date)
 
 		var d = (date.toString()).split(' ');
 		d[2] = d[2] + ',';
-		var formatted_date = date.getFullYear().toString() + '-' + date.getMonth().toString() + '-' +  date.getDate().toString();
-
-
-		console.log(formatted_date);
-		console.log("STATES:  ", mop, transactionType, category)
-		let response = createNewTransaction({
+		var formatted_date = date.getFullYear().toString() + '-' + (date.getMonth()+1).toString() + '-' +  date.getDate().toString();
+		const data = {
 			'tr_amount': transAmount,
 			'tr_date':formatted_date,
 			'tr_note':description,
@@ -165,10 +211,19 @@ export default function CreateEditTransaction() {
 			"tr_type": transactionType,
 			"mop": mop,
 			"cat": category
-		}, () => {
-			navigate("/dashboard");
-		})
-		// .then();
+		}
+
+		console.log("STATES:  ", mop, transactionType, category)
+		let response = null;
+		if (!editMode) {
+			response = createNewTransaction(data, () => {
+				navigate("/dashboard");
+			})
+		} else {
+			response = updateTransaction(data, state.id, () => {
+				navigate("/dashboard");
+			})
+		}
 		console.log('RESPONSE XOXOXOXO', response);
 	};
 
@@ -190,12 +245,12 @@ export default function CreateEditTransaction() {
 						<BackDrop />
 						<HeaderContainer>
 							<HeaderText>
-								Create/Edit Transaction
+								{header} Transaction
 							</HeaderText>
 						</HeaderContainer>
 					</TopContainer>
 
-					<Box component="form" noValidate onSubmit={handleCreate} sx={{ mt: 0, ml:3, mr:3 }}>
+					<Box component="form" noValidate onSubmit={handleCreateEdit} sx={{ mt: 0, ml:3, mr:3 }}>
 						<Grid container spacing={3}>
 							<Grid item xs={12} sm={12}>
 								<LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -289,7 +344,13 @@ export default function CreateEditTransaction() {
 							</Grid>
 						</Grid>
 						<SubmitButton>
-							Create
+							{(() => {
+								if(editMode) {
+									return "Update"
+								} else {
+									return "Create"
+								}
+							})()}
 						</SubmitButton>
 					</Box>
 				</BoxContainer>

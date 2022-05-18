@@ -51,6 +51,6 @@ export const Content = styled.div`
 		align-content:center;
 		margin-left: 10px;
 		color: rgba(0,0,0,0.3);
-		font-size: 80px;
+		font-size: 60px;
 	}
 `;
